@@ -25,4 +25,27 @@ Output:
 $ ends with (2)
 \escape character(2)
 """
+#class definition
+class RegExParser:
+  #initializes self 
+  def __init__(self, regex):
+    self.index = 0
+    self.pattern = regex
+    self.length = len(regex)
+    self.tokens = []
+
+  #parser method to tokenize the regular expression
+  def parse(self):
+    #while loop to interate through input
+    while self.position < self.length:
+      character = self.regex[self.position]
+      #operators
+      if char in '*+()':
+        self.tokens.append(char)
+      #literals
+      else:
+        self.tokens.append(char)
+      self.position += 1
+      
+      
 
