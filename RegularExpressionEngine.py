@@ -16,7 +16,7 @@ class LexicalAnalyzer:
         self.tokens.append(character)
         self.position += 1
       #handle escapes
-      elif character == "\\":
+      elif character == '\\':
         #call method to handle this case
         self.tokens.append(self.analyzeEscape())
       #handle literals
