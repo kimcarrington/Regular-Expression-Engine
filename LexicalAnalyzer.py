@@ -3,6 +3,7 @@ class LexicalAnalyzer:
     self.regex = regex
     self.length = len(regex)
     self.position = 0
+    #self.previousIndex = 0
     self.tokens = []           #list of dictionaries
 
 #method to add tokens 
@@ -37,6 +38,10 @@ def analyze(self):
 def analyzeEscape(self):
   #check next character
   self.position += 1
+
+  #send error message if end of sequence is reached
+  if self.position >= self.length:
+    raise ValueError("Incomplete Escape Sequence at End of Input.")
   character = self.regex[self.position]
   #check if next character is supported
   if character in '*+()':
@@ -45,3 +50,55 @@ def analyzeEscape(self):
   #send error message
   else:
     raise ValueError("Unsupported Escape Sequence.")
+
+
+#method to add concatenation
+def concatenate(self):
+  #check length of tokens
+  if len(self.tokens) >= 2:
+    self.position = 1
+    #while loop to iterate through list
+    while self.position < len(self.tokens):
+      #choose dictionaries
+      current = self.tokens[self.position]
+      previous = self.tokens[self.position - 1]
+      if previous['Type'] == "literal" and current['Type'] == "literal": 
+        #append and update position
+        self.tokens.insert(self.position, dict(Value = "-", Type = "concat"))
+        self.position += 1
+      elif previous['Type'] == "literal" and current['Type'] == "openSubexpression":
+        #append and update position
+        self.tokens.insert(self.position, dict(Value = "-", Type = "concat"))
+        self.position += 1
+      elif previous['Type'] == "closeSubexpression" and current['Type'] == "literal":
+        #append and update position
+        self.tokens.insert(self.position, dict(Value = "-", Type = "concat"))
+        self.position += 1
+      elif previous['Type'] == "unaryOperator" and current['Type'] == "literal":
+        #append and update position
+        self.tokens.insert(self.position, dict(Value = "-", Type = "concat"))
+        self.position += 1
+      #increment position
+      self.position += 1
+
+#method to add concatenation to tokens
+def concatenate(self):
+  #check length of tokens
+  if len(self.tokens) >= 2:
+    self.position = 1
+    #while loop to iterate through tokens
+    while self.position < len(self.tokens):
+      #update current and previous
+      current = self.tokens[self.position]
+      previous = self.tokens[self.position - 1]
+      #conditionals
+      if (
+        (previous['Type'] == "literal" and (current['Type'] == "literal" or current['Type'] == "openSubexpression")) or 
+        (current['Type'] == "literal" and (previous['Type'] == "closeSubexpression" or previous['Type'] == "unaryOperator"))
+         ):
+           #append and update position
+           self.tokens.insert(self.position, dict(Value = "-", Type = "concat"))
+           self.position += 1
+      #increment position
+      self.position += 1
+  
