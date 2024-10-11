@@ -51,36 +51,6 @@ def analyzeEscape(self):
   else:
     raise ValueError("Unsupported Escape Sequence.")
 
-
-#method to add concatenation
-def concatenate(self):
-  #check length of tokens
-  if len(self.tokens) >= 2:
-    self.position = 1
-    #while loop to iterate through list
-    while self.position < len(self.tokens):
-      #choose dictionaries
-      current = self.tokens[self.position]
-      previous = self.tokens[self.position - 1]
-      if previous['Type'] == "literal" and current['Type'] == "literal": 
-        #append and update position
-        self.tokens.insert(self.position, dict(Value = "-", Type = "concat"))
-        self.position += 1
-      elif previous['Type'] == "literal" and current['Type'] == "openSubexpression":
-        #append and update position
-        self.tokens.insert(self.position, dict(Value = "-", Type = "concat"))
-        self.position += 1
-      elif previous['Type'] == "closeSubexpression" and current['Type'] == "literal":
-        #append and update position
-        self.tokens.insert(self.position, dict(Value = "-", Type = "concat"))
-        self.position += 1
-      elif previous['Type'] == "unaryOperator" and current['Type'] == "literal":
-        #append and update position
-        self.tokens.insert(self.position, dict(Value = "-", Type = "concat"))
-        self.position += 1
-      #increment position
-      self.position += 1
-
 #method to add concatenation to tokens
 def concatenate(self):
   #check length of tokens
