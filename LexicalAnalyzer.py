@@ -13,11 +13,11 @@ def analyze(self):
     character = self.regex[self.position]
     #handle unary operators
     if character in '*':
-      self.tokens.append(dict(Value = character, Type = "unaryOperator"))
+      self.tokens.append(dict(Value = character, Type = "kleeneStar"))
       self.position += 1
     #handle binary operators
     elif character in '+':
-      self.tokens.append(dict(Value = character, Type = "binaryOperator"))
+      self.tokens.append(dict(Value = character, Type = "alternationOperator"))
       self.position += 1
     #handle escape characters
     elif character == '\\':
