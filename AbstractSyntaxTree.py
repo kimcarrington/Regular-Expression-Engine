@@ -53,7 +53,7 @@ class Parser:
       elif token['Type'] == 'alternationOperator':
         self.process_operator(token['Value'])
       #handles concatenation
-      elif token['Type'] == 'concatenation':
+      elif token['Type'] == 'concat':
         self.process_operator(token['Value'])
       #handles the beginning of a subexpression
       elif token['Type'] == 'openSubexpression':
@@ -64,6 +64,16 @@ class Parser:
 
       #increment position
       self.position += 1
+
+    #while loop to process remaining operators
+    while self.operator_stack:
+      self.process_operator_stack()
+
+    # returns the final node in the operand stadck
+    if len(self.operand_stack) == 1:
+      return self.operand_stack[0]
+    else:
+      raise ValueError("Invalid Expression")
 
   #method to process operators in order of precedence
   def process_operator(self,operator):
@@ -76,3 +86,19 @@ class Parser:
       self.operand_stack.append(BinaryNode(top_operator['Value'], left, right))
     #push operator to operator stack
     self.operator_stack.append(dict(Value=operator, Type="binaryOperator"))
+
+  #method to process subexpressions
+  def process_subexpression(self):
+    while self.operator_stack and self.operator_stack[-1]['Type'] != 'openSubexpression':
+      self.process_operator_stack()
+    #get rid of the openSubexpression token
+    if self.operator_stack and self.operator_stack[-1]['Type'] == 'openSubexpression':
+      self.operator_stack.pop()
+
+  #method to process the operators left on stack
+  def process_operator_stack(self):
+    if self.operator_stack:
+      top_operator = self.operator_stack.pop()
+      right = self.operand_stack.pop()
+      left = self.operand_stack.pop()
+      self.operand_stack.append(BinaryNode(top_operator['Value'], left, right))
