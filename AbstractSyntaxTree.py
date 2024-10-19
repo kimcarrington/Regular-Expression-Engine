@@ -13,16 +13,23 @@ class LiteralNode:
   def __init__(self, value):
     self.value = value
 
-#node for unary operators like kleene star
-class UnaryNode:
-  def __init__(self, operator, operand):
-    self.operator = operator
+#node for kleene star
+class KleeneStarNode:
+  def __init__(self, operand):
+    self.operator = '*'
     self.operand = operand
-
-#node for binary operators like concatenation - or alternation +
-class BinaryNode:
-  def __init__(self, operator, left, right):
-    self.operator = operator
+    
+#node for concatenation operator
+class ConcatNode:
+  def __init__(self, left, right):
+    self.operator = '-'
+    self.left = left
+    self.right = right
+    
+#node for alternation operator
+class AlternationNode:
+  def __init__(self, left, right):
+    self.operator = '+'
     self.left = left
     self.right = right
 
@@ -48,7 +55,7 @@ class Parser:
       #handles kleene stars
       elif token['Type'] == 'kleeneStar':
         operand = self.operand_stack.pop()  #takes operand off stack
-        self.operand_stack.append(UnaryNode('*', operand))  #pushes kleene star and its operator to stack
+        self.operand_stack.append(KleeneStarNode(operand))  #pushes kleene star and its operand to stack
       #handles alternation 
       elif token['Type'] == 'alternationOperator':
         self.process_operator(token['Value'])
@@ -82,9 +89,13 @@ class Parser:
       top_operator = self.operator_stack.pop()
       right = self.operand_stack.pop()
       left = self.operand_stack.pop()
-      #push binary node and its operands to the operand stack
-      self.operand_stack.append(BinaryNode(top_operator['Value'], left, right))
-    #push operator to operator stack
+      #push node and its operands to the operand stack
+      if top_operator['Value'] == '+':
+        self.operand_stack.append(AlternationNode(left, right))
+      elif top_operator['Value'] == '-':
+        self.operand_stack.append(ConcatNode(left, right))
+
+    #push operator to operator stack for temporary storage
     self.operator_stack.append(dict(Value=operator, Type="binaryOperator"))
 
   #method to process subexpressions
@@ -101,4 +112,8 @@ class Parser:
       top_operator = self.operator_stack.pop()
       right = self.operand_stack.pop()
       left = self.operand_stack.pop()
-      self.operand_stack.append(BinaryNode(top_operator['Value'], left, right))
+      if top_operator['Value'] == '+':
+        self.operand_stack.append(AlternationNode(left, right))
+      elif top_operator['Value'] == '-':
+        self.operand_stack.append(Concatnode(left, right))
+        self.operand_stack.append(BinaryNode(top_operator['Value'], left, right))
