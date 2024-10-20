@@ -63,23 +63,23 @@ class Parser:
         self.operand_stack.append(KleeneStarNode(operand))  #pushes kleene star and its operand to stack
       #handles alternation 
       elif token['Type'] == 'alternationOperator':
-        self.processOperator(token['Value'])  #call process operator function
+        self.process_operator(token['Value'])  #call process operator function
       #handles concatenation
       elif token['Type'] == 'concat':
-        self.processOperator(token['Value'])   #call process operator function
+        self.process_operator(token['Value'])   #call process operator function
       #handles the beginning of a subexpression
       elif token['Type'] == 'openSubexpression':
         self.operator_stack.append(token) #push token to operator stack
       #handles the end of a subexpression
       elif token['Type'] == 'closeSubexpression':
-        self.processSubexpression() #call process subexpression method
+        self.process_subexpression() #call process subexpression method
 
       #increment position
       self.position += 1
 
     #while loop to process remaining operators
     while self.operator_stack:
-      self.processOperatorStack()
+      self.process_operator_stack()
 
     # returns the final node in the operand stadck
     if len(self.operand_stack) == 1:
@@ -88,7 +88,7 @@ class Parser:
       raise ValueError("Invalid Expression")
 
   #method to process operators in order of precedence
-  def processOperator(self,operator):
+  def process_operator(self,operator):
     #while loop to check operator stack
     while self.operator_stack and self.operator_stack[-1]['Type'] != 'openSubexpression':
       top_operator = self.operator_stack.pop()
@@ -104,15 +104,15 @@ class Parser:
     self.operator_stack.append(dict(Value=operator, Type="binaryOperator"))
 
   #method to process subexpressions
-  def processSubexpression(self):
+  def process_subexpression(self):
     while self.operator_stack and self.operator_stack[-1]['Type'] != 'openSubexpression':
-      self.processOperatorStack()
+      self.process_operator_stack()
     #get rid of the openSubexpression token
     if self.operator_stack and self.operator_stack[-1]['Type'] == 'openSubexpression':
       self.operator_stack.pop()
 
   #method to process the operators left on stack
-  def processOperatorStack(self):
+  def process_operator_stack(self):
     if self.operator_stack:
       top_operator = self.operator_stack.pop()
       right = self.operand_stack.pop()
