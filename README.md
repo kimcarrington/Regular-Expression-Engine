@@ -9,4 +9,7 @@ This regular expression engine accepts and evaluates a regular expression, and c
 | `+` | alternation | 
 | `(` | beginning of subexpression |
 | `)` | end of subexpression |
+
 all other characters will be treated as literals
+
+## Project Structure
