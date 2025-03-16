@@ -1,6 +1,7 @@
 # Regular-Expression-Engine
-This regular expression engine accepts and evaluates a regular expression, and compares it to input strings to check for matches. 
+This simple regular expression engine accepts and evaluates a regular expression, and compares it to input strings to check for matches. 
 ## Usage
+
 ## Regular Expression Syntax
 
 | Syntax | Description |
@@ -10,6 +11,7 @@ This regular expression engine accepts and evaluates a regular expression, and c
 | `(` | beginning of subexpression |
 | `)` | end of subexpression |
 
-all other characters will be treated as literals
+> [!Note]
+> all other characters will be treated as literals
 
 ## Project Structure
